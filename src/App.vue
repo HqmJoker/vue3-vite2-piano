@@ -20,6 +20,7 @@
     <li class="white-btn" :class="{ 'next-btn': musicIndex == '7'  }"><span class="white-value">7</span></li>
     <li class="white-btn" :class="{ 'next-btn': musicIndex == '8'  }"><span class="white-value">8</span></li>
   </ul>
+  <p class="lyric">{{ lyricText }}</p>
   <el-button class="start" @click="start">开始</el-button>
 </template>
 
@@ -38,15 +39,48 @@
         value: '',
         showTips: false, // 是否显示消息框
         messageText: '', // 消息框文本
+        lyricArr: [], // 歌词
+        musicArr: [], // 音符
         showIndex: -1, // 当前音符下标
         musicIndex: -1, // 当前音符
         lyricIndex: -1, // 歌词下标
+        curLyricIndex: -1, // 歌词对应字下标
       }
     },
     mounted() {
       this.addkeyDownEvent();
     },
+    computed: {
+      lyricText() {
+        const text = this.lyricArr[this.lyricIndex]
+        return text && text.length ? text : '暂无歌词信息！'
+      }
+    },
     methods: {
+      // 重置状态
+      resetStatus() {
+        this.lyricArr = [];
+        this.musicArr = [];
+        this.showIndex = -1;
+        this.musicIndex = -1;
+        this.lyricIndex = -1;
+        this.curLyricIndex = -1;
+      },
+      // 处理按键正确后逻辑
+      showNext() {
+        this.showIndex++;
+        this.musicIndex = this.musicArr[this.showIndex];
+        this.curLyricIndex++;
+        if(this.curLyricIndex === this.lyricArr[this.lyricIndex].length) {
+          this.lyricIndex++;
+          this.curLyricIndex = 0;
+          if(this.lyricIndex === this.lyricArr.length) {
+            this.showMessage('演奏结束！');
+            this.resetStatus();
+          }
+        }
+      },
+      // 按下按键
       addkeyDownEvent() {
           // var addaudio = document.createElement("audio");
           // addaudio.setAttribute("src", "audios/" + "w" + i + ".ogv");
@@ -57,28 +91,44 @@
           const key = e.key;
           switch(key) {
             case 's':
-              console.log('s');
+              if(this.musicIndex == '1') {
+                this.showNext();
+              }
             break;
             case 'd':
-              console.log('d');
+              if(this.musicIndex == '2') {
+                this.showNext();
+              }
             break;
             case 'f':
-              console.log('f');
+              if(this.musicIndex == '3') {
+                this.showNext();
+              }
             break;
             case 'g':
-              console.log('g');
+              if(this.musicIndex == '4') {
+                this.showNext();
+              }
             break;
             case 'h':
-              console.log('h');
+              if(this.musicIndex == '5') {
+                this.showNext();
+              }
             break;
             case 'j':
-              console.log('j');
+              if(this.musicIndex == '6') {
+                this.showNext();
+              }
             break;
             case 'k':
-              console.log('k');
+              if(this.musicIndex == '7') {
+                this.showNext();
+              }
             break;
             case 'l':
-              console.log('l');
+              if(this.musicIndex == '8') {
+                this.showNext();
+              }
             break;
             default: break;
           }
@@ -92,14 +142,13 @@
           return;
         }
         const lyric = songObj[this.value];
-        const numReg = /[1-9]/g; // 音符部分
-        const wordReg = /[\u4e00-\u9fa5]+/g; // 歌词文字
-        const shows = lyric.match(numReg);
-        const words = lyric.match(wordReg);
-        console.log(shows, words);
+        this.musicArr = lyric.match(/[1-9]/g);
+        this.lyricArr = lyric.match(/[\u4e00-\u9fa5]+/g);
         this.showIndex = 0;
         this.lyricIndex = 0;
-        this.musicIndex = shows[this.showIndex];
+        this.curLyricIndex = 0;
+        this.musicIndex = this.musicArr[this.showIndex];
+        console.log( this.musicArr, this.lyricArr);
       },
       // 显示消息提示
       showMessage(msg) {
@@ -117,7 +166,7 @@
 
 <style lang="scss" scoped>
 
-.song-name, .game-intr, .piano {
+.song-name, .game-intr, .piano, .lyric {
   width: 480px;
   margin: 0 auto 20px;
 }
