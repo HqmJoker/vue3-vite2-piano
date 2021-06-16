@@ -11,14 +11,14 @@
     使用键盘上的S~L键操作钢琴白键,E,R,Y,U,I操作钢琴黑键，也可以通过鼠标点击来弹奏钢琴。可通过快捷键V键控制琴键上数字的显示与隐藏。目前只支持四首歌曲，晴天，最长的电影，同桌的你，送别。
   </p>
   <ul class="piano">
-    <li class="white-btn"><span class="white-value">1</span><p class="black-btn"></p></li>
-    <li class="white-btn"><span class="white-value">2</span><p class="black-btn"></p></li>
-    <li class="white-btn"><span class="white-value">3</span></li>
-    <li class="white-btn"><span class="white-value">4</span><p class="black-btn"></p></li>
-    <li class="white-btn"><span class="white-value">5</span><p class="black-btn"></p></li>
-    <li class="white-btn"><span class="white-value">6</span><p class="black-btn"></p></li>
-    <li class="white-btn"><span class="white-value">7</span></li>
-    <li class="white-btn"><span class="white-value">8</span></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '1'  }"><span class="white-value">1</span><p class="black-btn"></p></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '2'  }"><span class="white-value">2</span><p class="black-btn"></p></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '3'  }"><span class="white-value">3</span></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '4'  }"><span class="white-value">4</span><p class="black-btn"></p></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '5'  }"><span class="white-value">5</span><p class="black-btn"></p></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '6'  }"><span class="white-value">6</span><p class="black-btn"></p></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '7'  }"><span class="white-value">7</span></li>
+    <li class="white-btn" :class="{ 'next-btn': musicIndex == '8'  }"><span class="white-value">8</span></li>
   </ul>
   <el-button class="start" @click="start">开始</el-button>
 </template>
@@ -38,11 +38,53 @@
         value: '',
         showTips: false, // 是否显示消息框
         messageText: '', // 消息框文本
+        showIndex: -1, // 当前音符下标
+        musicIndex: -1, // 当前音符
+        lyricIndex: -1, // 歌词下标
       }
     },
     mounted() {
+      this.addkeyDownEvent();
     },
     methods: {
+      addkeyDownEvent() {
+          // var addaudio = document.createElement("audio");
+          // addaudio.setAttribute("src", "audios/" + "w" + i + ".ogv");
+          // document.body.appendChild(addaudio);
+          // audios[this.index].load();
+          // audios[this.index].play();
+        document.onkeydown = (e) => {
+          const key = e.key;
+          switch(key) {
+            case 's':
+              console.log('s');
+            break;
+            case 'd':
+              console.log('d');
+            break;
+            case 'f':
+              console.log('f');
+            break;
+            case 'g':
+              console.log('g');
+            break;
+            case 'h':
+              console.log('h');
+            break;
+            case 'j':
+              console.log('j');
+            break;
+            case 'k':
+              console.log('k');
+            break;
+            case 'l':
+              console.log('l');
+            break;
+            default: break;
+          }
+          e.preventDefault();
+        }
+      },
       // 开始演奏
       start() {
         if(!this.value) {
@@ -50,7 +92,14 @@
           return;
         }
         const lyric = songObj[this.value];
-        console.log(lyric);
+        const numReg = /[1-9]/g; // 音符部分
+        const wordReg = /[\u4e00-\u9fa5]+/g; // 歌词文字
+        const shows = lyric.match(numReg);
+        const words = lyric.match(wordReg);
+        console.log(shows, words);
+        this.showIndex = 0;
+        this.lyricIndex = 0;
+        this.musicIndex = shows[this.showIndex];
       },
       // 显示消息提示
       showMessage(msg) {
@@ -62,7 +111,7 @@
           clearTimeout(timer);
         }, 2000)
       },
-    },
+    }
   }
 </script>
 
