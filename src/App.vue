@@ -47,7 +47,8 @@
         musicIndex: -1, // 当前音符
         lyricIndex: -1, // 歌词下标
         curLyricIndex: -1, // 歌词对应字下标
-        musicSrc: w1
+        musicSrc: '', // 音阶音源
+        lastMusicPlayTime: 0, // 用于判断音符播放间隔
       }
     },
     mounted() {
@@ -68,12 +69,16 @@
         this.musicIndex = -1;
         this.lyricIndex = -1;
         this.curLyricIndex = -1;
+        this.musicSrc = '';
+        this.lastMusicPlayTime = 0;
       },
       // 处理按键正确后逻辑
       showNext() {
+        // 当前没有播放乐谱
         if(this.showIndex === -1) {
           return;
         }
+        this.$refs.audio.play();
         this.showIndex++;
         this.musicIndex = this.musicArr[this.showIndex];
         this.curLyricIndex++;
@@ -90,6 +95,15 @@
       addkeyDownEvent() {
         document.onkeydown = (e) => {
           const key = e.key;
+          if(this.showIndex !== -1) {
+            // 解决按太快音符
+            const now = new Date().getTime();
+            if(now - this.lastMusicPlayTime < 1000) { // 按键时间大于1s才执行播放音频
+              this.showMessage('手速太快了，请等待上个音阶播放完毕后再进行操作！')
+              return;
+            }
+            this.lastMusicPlayTime = now;
+          }
           switch(key) {
             case 's':
               if(this.musicIndex == '1') {
@@ -129,7 +143,7 @@
             break;
             case 'k':
               if(this.musicIndex == '7') {
-                this.musicSrc = w8;
+                this.musicSrc = w7;
                 this.showNext();
               }
             break;
@@ -141,7 +155,6 @@
             break;
             default: break;
           }
-          this.$refs.audio.play();
           e.preventDefault();
         }
       },
@@ -151,6 +164,7 @@
           this.showMessage('请选择歌名！');
           return;
         }
+        this.resetStatus()
         const lyric = songObj[this.value];
         this.musicArr = lyric.match(/[1-9]/g);
         this.lyricArr = lyric.match(/[\u4e00-\u9fa5]+/g);
@@ -158,12 +172,10 @@
         this.lyricIndex = 0;
         this.curLyricIndex = 0;
         this.musicIndex = this.musicArr[this.showIndex];
-        console.log( this.musicArr, this.lyricArr);
       },
       // 显示消息提示
       showMessage(msg) {
         this.messageText = msg;
-        console.log(msg)
         this.showTips = true;
         let timer = setTimeout(() => {
           this.showTips = false;
