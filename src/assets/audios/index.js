@@ -1,0 +1,8 @@
+export { default as w1 } from './w1.ogg' 
+export { default as w2 } from './w2.ogg' 
+export { default as w3 } from './w3.ogg' 
+export { default as w4 } from './w4.ogg' 
+export { default as w5 } from './w5.ogg' 
+export { default as w6 } from './w6.ogg' 
+export { default as w7 } from './w7.ogg' 
+export { default as w8 } from './w8.ogg' 

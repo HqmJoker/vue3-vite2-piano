@@ -1,5 +1,5 @@
 <template>
- <div class="messageBox" :class="{ 'messgae-error' :showTips }">{{ messageText }}</div>
+  <div class="messageBox" :class="{ 'messgae-error' :showTips }">{{ messageText }}</div>
   <div class="song-name">
     <span>选择歌名：</span>
     <el-select v-model="value" placeholder="请选择">
@@ -22,10 +22,12 @@
   </ul>
   <p class="lyric">{{ lyricText }}</p>
   <el-button class="start" @click="start">开始</el-button>
+  <audio ref="audio" :src="musicSrc"></audio>
 </template>
 
 <script>
   import { songObj } from '@/assets/data/index.js'
+  import { w1, w2, w3, w4, w5, w6, w7, w8 } from '@/assets/audios/index.js'
 
   export default {
     data() {
@@ -45,6 +47,7 @@
         musicIndex: -1, // 当前音符
         lyricIndex: -1, // 歌词下标
         curLyricIndex: -1, // 歌词对应字下标
+        musicSrc: w1
       }
     },
     mounted() {
@@ -68,6 +71,9 @@
       },
       // 处理按键正确后逻辑
       showNext() {
+        if(this.showIndex === -1) {
+          return;
+        }
         this.showIndex++;
         this.musicIndex = this.musicArr[this.showIndex];
         this.curLyricIndex++;
@@ -82,56 +88,60 @@
       },
       // 按下按键
       addkeyDownEvent() {
-          // var addaudio = document.createElement("audio");
-          // addaudio.setAttribute("src", "audios/" + "w" + i + ".ogv");
-          // document.body.appendChild(addaudio);
-          // audios[this.index].load();
-          // audios[this.index].play();
         document.onkeydown = (e) => {
           const key = e.key;
           switch(key) {
             case 's':
               if(this.musicIndex == '1') {
+                this.musicSrc = w1;
                 this.showNext();
               }
             break;
             case 'd':
               if(this.musicIndex == '2') {
+                this.musicSrc = w2;
                 this.showNext();
               }
             break;
             case 'f':
               if(this.musicIndex == '3') {
+                this.musicSrc = w3;
                 this.showNext();
               }
             break;
             case 'g':
               if(this.musicIndex == '4') {
+                this.musicSrc = w4;
                 this.showNext();
               }
             break;
             case 'h':
               if(this.musicIndex == '5') {
+                this.musicSrc = w5;
                 this.showNext();
               }
             break;
             case 'j':
               if(this.musicIndex == '6') {
+                this.musicSrc = w6;
                 this.showNext();
               }
             break;
             case 'k':
               if(this.musicIndex == '7') {
+                this.musicSrc = w8;
                 this.showNext();
               }
             break;
             case 'l':
               if(this.musicIndex == '8') {
+                this.musicSrc = w8;
                 this.showNext();
               }
             break;
             default: break;
           }
+          this.$refs.audio.play();
           e.preventDefault();
         }
       },
