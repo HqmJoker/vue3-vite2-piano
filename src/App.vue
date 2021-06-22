@@ -22,7 +22,7 @@
   </ul>
   <p class="lyric">{{ lyricText }}</p>
   <el-button class="start" @click="start">开始</el-button>
-  <audio ref="audio" :src="musicSrc"></audio>
+  <audio v-for="(audio, audioIndex) in musicSrc" :ksy="audioIndex" :ref="'audio'+audioIndex" :src="audio"></audio>
 </template>
 
 <script>
@@ -47,8 +47,7 @@
         musicIndex: -1, // 当前音符
         lyricIndex: -1, // 歌词下标
         curLyricIndex: -1, // 歌词对应字下标
-        musicSrc: '', // 音阶音源
-        lastMusicPlayTime: 0, // 用于判断音符播放间隔
+        musicSrc: [w1, w2, w3, w4, w5, w6, w7, w8], // 音阶音源
       }
     },
     mounted() {
@@ -69,7 +68,6 @@
         this.musicIndex = -1;
         this.lyricIndex = -1;
         this.curLyricIndex = -1;
-        this.musicSrc = '';
         this.lastMusicPlayTime = 0;
       },
       // 处理按键正确后逻辑
@@ -78,7 +76,6 @@
         if(this.showIndex === -1) {
           return;
         }
-        this.$refs.audio.play();
         this.showIndex++;
         this.musicIndex = this.musicArr[this.showIndex];
         this.curLyricIndex++;
@@ -95,65 +92,60 @@
       addkeyDownEvent() {
         document.onkeydown = (e) => {
           const key = e.key;
-          if(this.showIndex !== -1) {
-            // 解决按太快音符
-            const now = new Date().getTime();
-            if(now - this.lastMusicPlayTime < 1000) { // 按键时间大于1s才执行播放音频
-              this.showMessage('手速太快了，请等待上个音阶播放完毕后再进行操作！')
-              return;
-            }
-            this.lastMusicPlayTime = now;
-          }
+          let isRight = false;
           switch(key) {
             case 's':
               if(this.musicIndex == '1') {
-                this.musicSrc = w1;
-                this.showNext();
+                this.$refs.audio0.play();
+                isRight = true;
               }
             break;
             case 'd':
               if(this.musicIndex == '2') {
-                this.musicSrc = w2;
-                this.showNext();
+                this.$refs.audio1.play();
+                isRight = true;
               }
             break;
             case 'f':
               if(this.musicIndex == '3') {
-                this.musicSrc = w3;
-                this.showNext();
+                this.$refs.audio2.play();
+                isRight = true;
               }
             break;
             case 'g':
               if(this.musicIndex == '4') {
-                this.musicSrc = w4;
-                this.showNext();
+                this.$refs.audio3.play();
+                isRight = true;
               }
             break;
             case 'h':
               if(this.musicIndex == '5') {
-                this.musicSrc = w5;
-                this.showNext();
+                this.$refs.audio4.play();
+                isRight = true;
               }
             break;
             case 'j':
               if(this.musicIndex == '6') {
-                this.musicSrc = w6;
-                this.showNext();
+                this.$refs.audio5.play();
+                isRight = true;
               }
             break;
             case 'k':
               if(this.musicIndex == '7') {
-                this.musicSrc = w7;
-                this.showNext();
+                this.$refs.audio6.play();
+                isRight = true;
               }
             break;
             case 'l':
               if(this.musicIndex == '8') {
-                this.musicSrc = w8;
-                this.showNext();
+                this.$refs.audio7.play();
+                isRight = true;
               }
             break;
             default: break;
+          }
+          if(isRight) {
+            this.showNext();
           }
           e.preventDefault();
         }
@@ -260,4 +252,3 @@
   transform: translate(-50%, 0);
 }
 </style>
-
